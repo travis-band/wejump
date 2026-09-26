@@ -1,0 +1,12 @@
+# 비밀은 절대 git에 올리지 않습니다
+.env
+# 서버에서 deploy.sh가 만드는 파일들 (서버마다 다름)
+deploy/vps/.env
+deploy/vps/.active
+deploy/vps/Caddyfile
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.DS_Store
