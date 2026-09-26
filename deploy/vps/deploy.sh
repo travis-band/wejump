@@ -80,6 +80,7 @@ if [ -n "$($COMPOSE ps -q --status running caddy)" ]; then
   $COMPOSE exec -T caddy caddy reload --config /etc/caddy/Caddyfile # 연결을 끊지 않고 설정만 교체
 else
   $COMPOSE up -d caddy # 첫 배포: Caddy를 처음 켬 (HTTPS 인증서도 이때 발급)
+  sleep 2              # Caddy가 처음 켜질 때는 준비에 1초 남짓 걸림
 fi
 echo "$NEXT" > .active
 echo "✓ 이제 손님은 $NEXT($TAG) 로 갑니다"
