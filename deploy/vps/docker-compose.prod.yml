@@ -1,0 +1,65 @@
+# VPS(진짜 서버)에서 돌아가는 구성. 컨테이너 4개가 한 대의 서버 안에 있습니다.
+#
+#   인터넷 ──443──▶ caddy ──▶ app-blue  ─┐
+#                        (둘 중 하나만)   ├──▶ db ──▶ pgdata 볼륨(디스크)
+#                          ╰─▶ app-green ─┘
+#
+# 직접 `docker compose up` 하지 말고 ./deploy.sh <태그> 로 배포하세요.
+# 값(${...})은 같은 폴더의 .env 파일에서 읽습니다. .env는 서버에만 있고 git에는 없습니다.
+
+name: wejump-prod # 로컬 개발용(docker-compose.yml)과 볼륨이 섞이지 않게 이름을 다르게
+
+x-app: &app # blue와 green이 공유하는 설정
+  restart: unless-stopped
+  environment: &app-env
+    DATABASE_URL: postgresql://wejump:${POSTGRES_PASSWORD}@db:5432/wejump
+  depends_on:
+    db:
+      condition: service_healthy
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: wejump
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env에 POSTGRES_PASSWORD를 적어 주세요}
+      POSTGRES_DB: wejump
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wejump"]
+      interval: 3s
+      retries: 20
+    # ports 가 없습니다 → DB는 인터넷에서 접근 불가, 같은 서버의 컨테이너끼리만 접근 가능
+
+  app-blue:
+    <<: *app
+    image: ${IMAGE:?.env에 IMAGE를 적어 주세요}:${BLUE_TAG:-latest}
+    environment:
+      <<: *app-env
+      APP_COLOR: blue
+
+  app-green:
+    <<: *app
+    image: ${IMAGE}:${GREEN_TAG:-latest}
+    environment:
+      <<: *app-env
+      APP_COLOR: green
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      # Caddyfile은 deploy.sh가 Caddyfile.template에서 만들어 냅니다 (어느 색을 가리킬지 적혀 있음)
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # HTTPS 인증서 보관. 지우면 인증서를 다시 발급받아야 함
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
