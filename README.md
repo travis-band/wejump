@@ -24,6 +24,7 @@ docker compose up --build
 | 0 | [배포란 무엇인가](docs/00-배포란.md) | 큰 그림, 용어 |
 | 1 | [내 컴퓨터에서](docs/01-로컬.md) | 로컬 실행, localhost의 한계 |
 | 2 | [도커](docs/02-도커.md) | 이미지, 컨테이너, 볼륨 |
+| 2-1 | [로컬 DB 접속](docs/02-1-로컬DB.md) | localhost로 DB 접속, DB 파일이 저장되는 곳 |
 | 3 | [진짜 서버](docs/03-서버.md) | VPS, SSH, 도메인, HTTPS |
 | 4 | [자동 배포](docs/04-자동화.md) | GitHub Actions, 시크릿 |
 | 5 | [무중단 배포](docs/05-blue-green.md) | blue/green, 롤백, 로드밸런서 |
