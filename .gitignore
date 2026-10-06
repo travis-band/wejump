@@ -10,3 +10,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 .DS_Store
+
+# 에디터(IDE) 설정: 사람마다 다르므로 올리지 않습니다
+.idea/
+.vscode/
