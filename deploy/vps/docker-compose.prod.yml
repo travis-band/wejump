@@ -1,15 +1,15 @@
-# VPS(진짜 서버)에서 돌아가는 구성. 컨테이너 4개가 한 대의 서버 안에 있습니다.
+# The setup that runs on the VPS (the real server). Four containers live inside one server.
 #
-#   인터넷 ──443──▶ caddy ──▶ app-blue  ─┐
-#                        (둘 중 하나만)   ├──▶ db ──▶ pgdata 볼륨(디스크)
-#                          ╰─▶ app-green ─┘
+#   internet ──443──▶ caddy ──▶ app-blue  ─┐
+#                            (only one)    ├──▶ db ──▶ pgdata volume (disk)
+#                           ╰─▶ app-green ─┘
 #
-# 직접 `docker compose up` 하지 말고 ./deploy.sh <태그> 로 배포하세요.
-# 값(${...})은 같은 폴더의 .env 파일에서 읽습니다. .env는 서버에만 있고 git에는 없습니다.
+# Don't run `docker compose up` yourself; deploy with ./deploy.sh <tag>.
+# Values (${...}) are read from the .env file in the same folder. .env exists only on the server, never in git.
 
-name: wejump-prod # 로컬 개발용(docker-compose.yml)과 볼륨이 섞이지 않게 이름을 다르게
+name: wejump-prod # A different name so volumes don't mix with local development (docker-compose.yml)
 
-x-app: &app # blue와 green이 공유하는 설정
+x-app: &app # Settings shared by blue and green
   restart: unless-stopped
   environment: &app-env
     DATABASE_URL: postgresql://wejump:${POSTGRES_PASSWORD}@db:5432/wejump
@@ -31,7 +31,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U wejump"]
       interval: 3s
       retries: 20
-    # ports 가 없습니다 → DB는 인터넷에서 접근 불가, 같은 서버의 컨테이너끼리만 접근 가능
+    # No ports here → the database can't be reached from the internet, only by containers on the same server
 
   app-blue:
     <<: *app
@@ -54,9 +54,9 @@ services:
       - "${HTTP_PORT:-80}:80"
       - "${HTTPS_PORT:-443}:443"
     volumes:
-      # Caddyfile은 deploy.sh가 Caddyfile.template에서 만들어 냅니다 (어느 색을 가리킬지 적혀 있음)
+      # deploy.sh generates the Caddyfile from Caddyfile.template (it says which color to point at)
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data # HTTPS 인증서 보관. 지우면 인증서를 다시 발급받아야 함
+      - caddy_data:/data # Stores HTTPS certificates. Delete it and they have to be issued again
       - caddy_config:/config
 
 volumes:

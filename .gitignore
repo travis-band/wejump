@@ -1,6 +1,6 @@
-# 비밀은 절대 git에 올리지 않습니다
+# Secrets never go to git
 .env
-# 서버에서 deploy.sh가 만드는 파일들 (서버마다 다름)
+# Files deploy.sh creates on the server (different on every server)
 deploy/vps/.env
 deploy/vps/.active
 deploy/vps/Caddyfile
@@ -11,6 +11,6 @@ __pycache__/
 .venv/
 .DS_Store
 
-# 에디터(IDE) 설정: 사람마다 다르므로 올리지 않습니다
+# Editor (IDE) settings: different for every person, so not committed
 .idea/
 .vscode/

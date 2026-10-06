@@ -1,20 +1,20 @@
-# 로컬 개발용: 내 컴퓨터에서 앱 + DB를 한 번에 띄웁니다.
+# For local development: start the app + database on your computer in one go.
 #   docker compose up --build      → http://localhost:8000
-#   docker compose up -d db        → DB만 켜기 (uvicorn을 직접 돌리거나 pytest 할 때)
-#   docker compose down            → 끄기 (글은 남아 있음)
-#   docker compose down -v         → 끄고 DB 볼륨까지 삭제 (글이 전부 사라짐)
+#   docker compose up -d db        → start only the database (when running uvicorn directly or pytest)
+#   docker compose down            → stop (messages are kept)
+#   docker compose down -v         → stop and also delete the database volume (all messages are gone)
 
 services:
   db:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: wejump
-      POSTGRES_PASSWORD: localdev # 내 컴퓨터 전용. 진짜 서버에서는 절대 이렇게 파일에 적지 않습니다.
+      POSTGRES_PASSWORD: localdev # For your computer only. Never write a password in a file like this on a real server.
       POSTGRES_DB: wejump
     ports:
-      - "5432:5432" # 내 컴퓨터에서 uvicorn/pytest가 접속할 수 있게
+      - "5432:5432" # So uvicorn/pytest on your computer can connect
     volumes:
-      - pgdata:/var/lib/postgresql/data # DB 파일은 컨테이너 밖 "볼륨"에 저장 → 컨테이너를 지워도 남음
+      - pgdata:/var/lib/postgresql/data # Database files are stored in a "volume" outside the container → they survive when the container is deleted
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U wejump"]
       interval: 2s
@@ -23,7 +23,7 @@ services:
   app:
     build: .
     environment:
-      DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump # 컨테이너끼리는 서비스 이름(db)으로 찾아감
+      DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump # Containers find each other by service name (db)
       APP_COLOR: local
     ports:
       - "8000:8000"

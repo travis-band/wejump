@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# GCP에 무료 서버(e2-micro) 한 대를 만듭니다.  ※ 선생님 맥에서 실행 (서버 안이 아님)
+# Creates one free server (e2-micro) on GCP.  ※ Run on the teacher's Mac (not inside the server)
 #
-#   준비:   brew install --cask google-cloud-sdk
+#   Setup:  brew install --cask google-cloud-sdk
 #           gcloud auth login
-#   사용법: PROJECT=<GCP 프로젝트 ID> ./deploy/vps/create-vm.sh
+#   Usage:  PROJECT=<GCP project ID> ./deploy/vps/create-vm.sh
 #
-# 콘솔에서 클릭으로도 만들 수 있지만, 명령으로 남겨 두면
-# "무엇을 어떻게 만들었는지"가 기록되고 똑같이 다시 만들 수 있습니다.
+# You could also click through the console, but keeping it as commands
+# records "what was created and how", and lets you create it again exactly the same way.
 
 set -euo pipefail
 
 PROJECT="${PROJECT:?PROJECT=<GCP 프로젝트 ID> 를 앞에 붙여서 실행하세요}"
-ZONE="${ZONE:-us-west1-b}" # 무료 티어 리전: us-west1(오리건), us-central1(아이오와), us-east1(사우스캐롤라이나)
+ZONE="${ZONE:-us-west1-b}" # Free-tier regions: us-west1 (Oregon), us-central1 (Iowa), us-east1 (South Carolina)
 NAME="${NAME:-wejump}"
 
 echo "1) Compute Engine API 켜기"

@@ -1,4 +1,4 @@
-// 이 파일은 "브라우저"에서 실행됩니다. 서버(백엔드)에 fetch로 요청을 보내고 결과를 화면에 그립니다.
+// This file runs in the browser. It sends requests to the server (backend) with fetch and draws the results on the page.
 
 const form = document.querySelector("#form");
 const nameInput = document.querySelector("#name");
@@ -14,7 +14,7 @@ function renderMessage(m) {
   const when = document.createElement("span");
   const text = document.createElement("p");
 
-  // innerHTML 대신 textContent를 쓰면, 누가 <script>를 적어도 그냥 글자로만 보입니다 (XSS 방지).
+  // Using textContent instead of innerHTML means that even if someone types <script>, it shows up as plain text (prevents XSS).
   who.textContent = m.name;
   when.textContent = new Date(m.created_at).toLocaleString("ko-KR");
   text.textContent = m.body;
@@ -38,8 +38,8 @@ async function loadMessages() {
   }
 }
 
-// 지금 내 요청에 대답한 서버가 blue인지 green인지 표시합니다.
-// 배포 중에 이 색이 바뀌는 순간이 바로 "트래픽이 새 버전으로 넘어간" 순간입니다.
+// Show whether the server that answered my request is blue or green.
+// During a deploy, the moment this color changes is the moment traffic moved to the new version.
 async function loadVersion() {
   try {
     const res = await fetch("/api/version", { cache: "no-store" });
@@ -53,7 +53,7 @@ async function loadVersion() {
 }
 
 form.addEventListener("submit", async (event) => {
-  event.preventDefault(); // 페이지 새로고침 막기
+  event.preventDefault(); // Stop the page from reloading
   errorBox.textContent = "";
   const button = form.querySelector("button");
   button.disabled = true;
@@ -78,5 +78,5 @@ form.addEventListener("submit", async (event) => {
 
 loadMessages();
 loadVersion();
-setInterval(loadMessages, 3000); // 다른 사람이 쓴 글도 3초마다 새로 가져오기
+setInterval(loadMessages, 3000); // Fetch new messages, including other people's, every 3 seconds
 setInterval(loadVersion, 2000);

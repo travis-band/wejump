@@ -1,9 +1,9 @@
-# deploy.sh가 이 파일을 복사해서 Caddyfile을 만듭니다.
-#   __DOMAIN__ → .env의 DOMAIN   (예: wejump.duckdns.org)
-#   __COLOR__  → blue 또는 green (지금 트래픽을 받을 쪽)
+# deploy.sh copies this file to create the Caddyfile.
+#   __DOMAIN__ → DOMAIN from .env   (e.g. wejump.duckdns.org)
+#   __COLOR__  → blue or green      (the slot that receives traffic now)
 #
-# 도메인 이름만 적으면 Caddy가 Let's Encrypt에서 HTTPS 인증서를 알아서 받아 옵니다.
-# 로드밸런싱 실험은 docs/05-blue-green.md 를 보세요 (업스트림 두 개 + lb_policy round_robin).
+# Just write the domain name, and Caddy gets an HTTPS certificate from Let's Encrypt on its own.
+# For the load-balancing experiment, see docs/05-blue-green.md (two upstreams + lb_policy round_robin).
 
 __DOMAIN__ {
 	reverse_proxy app-__COLOR__:8000

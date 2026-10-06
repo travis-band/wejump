@@ -1,31 +1,31 @@
-# main 브랜치에 push하면 자동으로:  테스트 → 이미지 빌드 → 서버에 무중단 배포
+# Pushing to the main branch automatically runs:  test → image build → zero-downtime deploy to the server
 #
-#   test   : DB를 잠깐 띄워서 pytest. 실패하면 여기서 멈춤 (고장난 코드는 배포되지 않음)
-#   build  : Dockerfile로 이미지를 만들어 GitHub 레지스트리(ghcr.io)에 올림
-#   deploy : 서버에 ssh로 접속해서 deploy.sh 실행 (사람이 손으로 하던 것과 똑같은 명령)
+#   test   : start a database briefly and run pytest. Stops here on failure (broken code never gets deployed)
+#   build  : build the image from the Dockerfile and push it to GitHub's registry (ghcr.io)
+#   deploy : ssh into the server and run deploy.sh (exactly the commands a person would type by hand)
 #
-# 필요한 설정 (레포 → Settings → Secrets and variables → Actions):
-#   Variables  VPS_HOST     서버 주소 (비밀 아님)
-#              VPS_USER     접속 사용자, 기본 deploy (비밀 아님)
-#   Secrets    VPS_SSH_KEY  서버 접속용 개인키 (비밀!)
-# VPS_HOST가 비어 있으면 deploy 단계는 건너뜁니다.
+# Required settings (repo → Settings → Secrets and variables → Actions):
+#   Variables  VPS_HOST     server address (not secret)
+#              VPS_USER     login user, default deploy (not secret)
+#   Secrets    VPS_SSH_KEY  private key for logging into the server (secret!)
+# If VPS_HOST is empty, the deploy step is skipped.
 
 name: deploy-vps
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # Actions 탭에서 "Run workflow" 버튼으로 수동 실행
+  workflow_dispatch: # Run manually with the "Run workflow" button in the Actions tab
 
 permissions:
   contents: read
-  packages: write # ghcr.io에 이미지를 올릴 권한
+  packages: write # Permission to push images to ghcr.io
 
 jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      postgres: # 테스트 동안만 잠깐 사는 DB
+      postgres: # A database that lives only during the tests
         image: postgres:16-alpine
         env:
           POSTGRES_USER: wejump
@@ -59,14 +59,14 @@ jobs:
       - name: 이미지 이름과 태그 정하기
         id: meta
         run: |
-          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/wejump" >> "$GITHUB_OUTPUT"  # ,, = 소문자로
-          echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"                               # 커밋 번호 앞 7자리
+          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/wejump" >> "$GITHUB_OUTPUT"  # ,, = lowercase
+          echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"                               # first 7 characters of the commit
 
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }} # GitHub가 매 실행마다 자동으로 만들어 주는 임시 토큰
+          password: ${{ secrets.GITHUB_TOKEN }} # A temporary token GitHub creates automatically for every run
 
       - uses: docker/setup-buildx-action@v3
 
@@ -75,7 +75,7 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64 # 서버(e2-micro) CPU 종류
+          platforms: linux/amd64 # The server's (e2-micro) CPU type
           build-args: APP_VERSION=${{ steps.meta.outputs.tag }}
           tags: |
             ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
@@ -87,7 +87,7 @@ jobs:
     needs: build
     if: ${{ vars.VPS_HOST != '' }}
     runs-on: ubuntu-latest
-    concurrency: deploy-vps # 배포 두 개가 동시에 돌지 않게 줄 세우기
+    concurrency: deploy-vps # Queue deploys so two never run at the same time
     steps:
       - name: SSH 키 준비
         env:

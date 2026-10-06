@@ -4,7 +4,7 @@
   --text: #1d1d1b;
   --muted: #6b6b66;
   --border: #e3e3de;
-  /* 배포 색. app.js가 <html data-color="blue|green|..."> 를 바꾸면 아래 값이 바뀝니다 */
+  /* Deploy color. When app.js changes <html data-color="blue|green|...">, the value below changes */
   --deploy: #9a9a94;
 }
 html[data-color="blue"]   { --deploy: #2563eb; }

@@ -1,5 +1,5 @@
-# 서버에서 앱을 실행하는 데 필요한 라이브러리 (이미지 안에 설치됨)
-# 버전을 고정해 두면 "내 컴퓨터에선 되는데 서버에선 안 돼요"가 줄어듭니다.
+# Libraries needed to run the app on the server (installed inside the image)
+# Pinning versions means fewer "it works on my computer but not on the server" problems.
 fastapi==0.141.1
 uvicorn==0.54.0
 psycopg[binary]==3.3.6

@@ -1,21 +1,21 @@
-# Render Blueprint: "이 레포를 이렇게 배포해 주세요"라는 주문서입니다.
-# Render 대시보드 → New → Blueprint → 이 레포 선택 하면 이 파일을 읽어서 알아서 만듭니다.
+# Render Blueprint: an order form that says "please deploy this repo like this".
+# In the Render dashboard → New → Blueprint → pick this repo, and Render reads this file and builds everything.
 #
-# VPS 트랙과 같은 Dockerfile을 씁니다. 다른 점은 서버·프록시·HTTPS·blue/green을
-# 우리가 아니라 Render가 대신 관리한다는 것뿐입니다.
+# It uses the same Dockerfile as the VPS track. The only difference is that Render, not us,
+# manages the server, proxy, HTTPS, and blue/green.
 
 services:
   - type: web
     name: wejump
-    runtime: docker # 레포의 Dockerfile로 이미지를 빌드
-    plan: free # 15분 동안 요청이 없으면 잠듦. 다음 요청 때 깨어나는 데 1분 정도 걸림
-    region: singapore # 한국에서 가장 가까운 Render 리전. Neon DB도 싱가포르로 맞추세요
+    runtime: docker # Build the image from the repo's Dockerfile
+    plan: free # Sleeps after 15 minutes with no requests. Takes about a minute to wake up on the next request
+    region: singapore # The Render region closest to Korea. Put the Neon database in Singapore too
     branch: main
     dockerfilePath: ./Dockerfile
-    healthCheckPath: /healthz # 새 버전이 이 주소에 200을 줘야 트래픽을 넘김 (Render의 무중단 배포)
-    autoDeployTrigger: checksPass # GitHub Actions 테스트가 통과한 커밋만 배포
+    healthCheckPath: /healthz # Traffic moves only after the new version returns 200 here (Render's zero-downtime deploy)
+    autoDeployTrigger: checksPass # Deploy only commits that passed the GitHub Actions tests
     envVars:
       - key: DATABASE_URL
-        sync: false # 값은 파일에 적지 않고 대시보드에서 직접 입력 (Neon 연결 문자열)
+        sync: false # The value isn't written in this file; enter it in the dashboard (the Neon connection string)
       - key: APP_COLOR
         value: render

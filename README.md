@@ -1,15 +1,15 @@
-# wejump 방명록: 배포를 배우는 데모 앱
+# wejump guestbook: a demo app for learning deployment
 
-중고등학생에게 **"코드를 배포한다"는 게 무엇인지** 가르치기 위한 레포입니다.
-앱은 일부러 단순합니다 (이름 + 한마디를 남기는 방명록). 주인공은 앱이 아니라 **앱이 인터넷에 올라가는 과정**입니다.
+A repo for teaching middle and high school students **what it means to "deploy code"**.
+The app is simple on purpose (a guestbook where you leave your name and a short message). The star isn't the app. It's **the process of getting the app onto the internet**.
 
-- **앱**: Python(FastAPI) + HTML/CSS/바닐라 JS + PostgreSQL
-- **트랙 1**: GCP 무료 서버 + Docker + Caddy + GitHub Actions, push하면 blue/green 무중단 배포 ($0)
-- **트랙 2**: 같은 Dockerfile을 Render + Neon에 ($0)
+- **App**: Python (FastAPI) + HTML/CSS/vanilla JS + PostgreSQL
+- **Track 1**: a free GCP server + Docker + Caddy + GitHub Actions. Push, and it does a zero-downtime blue/green deploy ($0)
+- **Track 2**: the same Dockerfile on Render + Neon ($0)
 
-화면 아래 배지는 지금 응답한 서버가 `blue`인지 `green`인지 보여 줍니다. 배포하는 동안 이 색이 새로고침 없이 바뀌는 게 수업의 하이라이트입니다.
+The badge at the bottom of the page shows whether the server that just answered is `blue` or `green`. Watching that color change during a deploy, without refreshing, is the highlight of the lesson.
 
-## 30초 만에 실행
+## Run it in 30 seconds
 
 ```bash
 docker compose up --build
@@ -17,37 +17,37 @@ docker compose up --build
 
 <http://localhost:8000>
 
-## 수업 문서
+## Lesson docs
 
-| | 문서 | 내용 |
+| | Doc | Contents |
 |---|---|---|
-| 0 | [배포란 무엇인가](docs/00-what-is-deployment.md) | 큰 그림, 용어 |
-| 1 | [내 컴퓨터에서](docs/01-local.md) | 로컬 실행, localhost의 한계 |
-| 2 | [도커](docs/02-docker.md) | 이미지, 컨테이너, 볼륨 |
-| 2-1 | [로컬 DB 접속](docs/02-1-local-db.md) | localhost로 DB 접속, DB 파일이 저장되는 곳 |
-| 3 | [진짜 서버](docs/03-server.md) | VPS, SSH, 도메인, HTTPS |
-| 4 | [자동 배포](docs/04-automation.md) | GitHub Actions, 시크릿 |
-| 5 | [무중단 배포](docs/05-blue-green.md) | blue/green, 롤백, 로드밸런서 |
+| 0 | [What is deployment?](docs/00-what-is-deployment.md) | The big picture, vocabulary |
+| 1 | [On your own computer](docs/01-local.md) | Running locally, the limits of localhost |
+| 2 | [Docker](docs/02-docker.md) | Images, containers, volumes |
+| 2-1 | [Local database](docs/02-1-local-db.md) | Connecting over localhost, where database files are stored |
+| 3 | [A real server](docs/03-server.md) | VPS, SSH, domain, HTTPS |
+| 4 | [Automatic deploys](docs/04-automation.md) | GitHub Actions, secrets |
+| 5 | [Zero-downtime deploys](docs/05-blue-green.md) | Blue/green, rollback, load balancer |
 | 6 | [PaaS](docs/06-render.md) | Render + Neon |
-| 참고 | [옵션 비교](docs/07-options.md) | 다른 방법들의 비용과 트레이드오프 |
+| Reference | [Comparing options](docs/07-options.md) | Costs and trade-offs of other approaches |
 
-## 레포 구조
+## Repo layout
 
 ```
-app/                  앱 (main.py 백엔드, db.py SQL, static/ 프론트엔드, tests/)
-Dockerfile            앱을 이미지로 만드는 레시피 (두 트랙 공통)
-docker-compose.yml    내 컴퓨터용: 앱 + DB
-deploy/vps/           트랙 1: 서버 생성·준비·배포·롤백 스크립트
-.github/workflows/    트랙 1: push → 테스트 → 빌드 → 배포
-render.yaml           트랙 2: Render 설정
-docs/                 수업 문서
+app/                  The app (main.py backend, db.py SQL, static/ frontend, tests/)
+Dockerfile            Recipe that turns the app into an image (shared by both tracks)
+docker-compose.yml    For your computer: app + database
+deploy/vps/           Track 1: scripts to create, prepare, deploy to, and roll back the server
+.github/workflows/    Track 1: push → test → build → deploy
+render.yaml           Track 2: Render settings
+docs/                 Lesson docs
 ```
 
-## 비밀은 어디에
+## Where the secrets live
 
-| 비밀 | 사는 곳 | git에 있나 |
+| Secret | Where it lives | In git? |
 |---|---|---|
-| 로컬 DB 비밀번호 | `docker-compose.yml`, `.env` (로컬 전용 값) | compose 파일만. 로컬 전용이라 괜찮음 |
-| 서버 DB 비밀번호 | 서버의 `deploy/vps/.env` | 없음 |
-| 서버 접속 키 | GitHub Secrets `VPS_SSH_KEY` | 없음 |
-| Neon DB 주소 | Render 대시보드 | 없음 |
+| Local database password | `docker-compose.yml`, `.env` (local-only values) | Only the compose file. Fine, since it's local-only |
+| Server database password | `deploy/vps/.env` on the server | No |
+| Server login key | GitHub Secrets `VPS_SSH_KEY` | No |
+| Neon database address | Render dashboard | No |

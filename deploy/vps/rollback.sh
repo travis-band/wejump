@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# 되돌리기(rollback).
+# Rollback.
 #
-#   사용법:  ./rollback.sh
+#   Usage:  ./rollback.sh
 #
-# 되돌리기는 특별한 기능이 아닙니다. "직전 버전을 다시 배포"하는 것뿐입니다.
-# 직전 버전은 꺼진 채로 반대쪽 색 칸에 남아 있으므로, 그 태그로 deploy.sh를 부르면 끝.
+# Rollback isn't a special feature. It's just "deploy the previous version again".
+# The previous version is still sitting, stopped, in the other color's slot, so calling deploy.sh with its tag is all it takes.
 
 set -euo pipefail
 cd "$(dirname "$0")"

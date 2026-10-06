@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# 새 서버를 배포할 수 있는 상태로 만듭니다. 서버마다 딱 한 번만 실행합니다.  ※ 서버 안에서 실행
+# Gets a new server ready for deploys. Run it exactly once per server.  ※ Run inside the server
 #
-#   사용법 (서버에 ssh로 들어간 뒤):
-#     git clone https://github.com/<깃허브아이디>/wejump.git /tmp/wejump
+#   Usage (after you ssh into the server):
+#     git clone https://github.com/<github-id>/wejump.git /tmp/wejump
 #     sudo DOMAIN=wejump.duckdns.org \
 #          DEPLOY_PUBKEY="ssh-ed25519 AAAA... github-actions" \
 #          bash /tmp/wejump/deploy/vps/setup.sh
 #
-#   (선택) DuckDNS IP 자동 갱신:  DUCKDNS_TOKEN=<토큰> 도 함께 넘기세요.
+#   (Optional) automatic DuckDNS IP updates: also pass DUCKDNS_TOKEN=<token>.
 #
-# 하는 일:
-#   1. Docker 설치
-#   2. 스왑 메모리 1GB 추가 (e2-micro는 램이 1GB뿐)
-#   3. 배포 전용 사용자 'deploy' 만들기 + GitHub Actions용 공개키 등록
-#   4. 코드를 /opt/wejump 에 받아 두기
-#   5. 비밀 설정 파일(.env) 만들기 — DB 비밀번호는 무작위로 생성, 아무도 입력하지 않음
+# What it does:
+#   1. Install Docker
+#   2. Add 1GB of swap memory (the e2-micro has only 1GB of RAM)
+#   3. Create a deploy-only user 'deploy' + register the public key for GitHub Actions
+#   4. Download the code to /opt/wejump
+#   5. Create the secret settings file (.env). The database password is generated randomly; nobody types it
 
 set -euo pipefail
 
@@ -45,7 +45,7 @@ free -h | head -3
 
 echo "━━ 3/5 배포 전용 사용자 'deploy'"
 id deploy >/dev/null 2>&1 || useradd --create-home --shell /bin/bash deploy
-usermod -aG docker deploy # docker 그룹 = 서버 관리자급 권한. 그래서 이 사용자의 키는 GitHub Secret에만 둡니다.
+usermod -aG docker deploy # The docker group = administrator-level power on the server. That's why this user's key lives only in a GitHub Secret.
 install -d -m 700 -o deploy -g deploy /home/deploy/.ssh
 echo "$DEPLOY_PUBKEY" > /home/deploy/.ssh/authorized_keys
 chown deploy:deploy /home/deploy/.ssh/authorized_keys
@@ -66,7 +66,7 @@ BLUE_TAG=
 GREEN_TAG=
 EOF
   chown deploy:deploy "$ENV_FILE"
-  chmod 600 "$ENV_FILE" # deploy 사용자만 읽을 수 있게
+  chmod 600 "$ENV_FILE" # Readable only by the deploy user
 fi
 echo "   $ENV_FILE 생성됨 (내용은 출력하지 않습니다)"
 

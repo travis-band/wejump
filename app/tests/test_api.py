@@ -1,12 +1,12 @@
-"""배포 전에 자동으로 돌아가는 테스트. 하나라도 실패하면 GitHub Actions가 배포를 멈춥니다.
+"""Tests that run automatically before every deploy. If even one fails, GitHub Actions stops the deploy.
 
-실행 (먼저 docker compose up -d db 로 DB를 켜 두세요):
+Run (start the database first with docker compose up -d db):
     pytest -v
 """
 
 import os
 
-# DATABASE_URL이 없으면 docker-compose.yml의 로컬 DB를 쓴다
+# If DATABASE_URL isn't set, use the local database from docker-compose.yml
 os.environ.setdefault("DATABASE_URL", "postgresql://wejump:localdev@localhost:5432/wejump")
 
 from fastapi.testclient import TestClient  # noqa: E402
@@ -31,7 +31,7 @@ def test_write_then_read():
             ids = [m["id"] for m in client.get("/api/messages").json()]
             assert new_id in ids
         finally:
-            db.delete_message(new_id)  # 테스트가 남긴 글은 치운다
+            db.delete_message(new_id)  # Clean up the message the test left behind
 
 
 def test_rejects_blank_message():

@@ -1,4 +1,4 @@
-# 이미지 안에 들어가면 안 되는 것들. 특히 .env(비밀)는 절대 넣지 않습니다.
+# Things that must not go into the image. Above all, never include .env (secrets).
 .env
 .git
 .github

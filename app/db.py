@@ -1,11 +1,11 @@
-"""Postgres와 이야기하는 코드.
+"""Code that talks to Postgres.
 
-DB 주소와 비밀번호는 코드에 적지 않습니다.
-DATABASE_URL 이라는 환경변수에서 읽어옵니다.
-  - 내 컴퓨터: .env 파일 또는 docker-compose.yml
-  - VPS 서버: 서버에만 있는 deploy/vps/.env
-  - Render:   Render 대시보드의 Environment 화면
-같은 코드가 어디서 돌든, 환경변수만 바꿔 끼우면 됩니다.
+The database address and password are never written in the code.
+They are read from an environment variable called DATABASE_URL.
+  - Your computer: the .env file or docker-compose.yml
+  - VPS server:    deploy/vps/.env, which exists only on the server
+  - Render:        the Environment screen in the Render dashboard
+Wherever the same code runs, you only swap the environment variable.
 """
 
 import os
@@ -31,13 +31,13 @@ def connect():
 
 
 def init():
-    """앱이 켜질 때 한 번: 테이블이 없으면 만든다."""
+    """Once, when the app starts: create the table if it doesn't exist."""
     with connect() as conn:
         conn.execute(SCHEMA)
 
 
 def ping():
-    """DB가 살아 있는지 확인 (헬스체크용)."""
+    """Check that the database is alive (for the health check)."""
     with connect() as conn:
         conn.execute("SELECT 1")
 
@@ -51,8 +51,8 @@ def list_messages(limit=50):
 
 
 def add_message(name, body):
-    # %s 자리에 값을 따로 넘기면 psycopg가 안전하게 끼워 넣습니다 (SQL 인젝션 방지).
-    # 문자열을 직접 이어 붙여 SQL을 만들면 절대 안 됩니다.
+    # Passing values separately for each %s lets psycopg insert them safely (prevents SQL injection).
+    # Never build SQL by gluing strings together yourself.
     with connect() as conn:
         return conn.execute(
             "INSERT INTO messages (name, body) VALUES (%s, %s) "

@@ -1,33 +1,33 @@
-# 이 파일은 "우리 앱을 담은 상자(이미지)를 만드는 레시피"입니다.
-# 이 레시피 하나로 만든 이미지가 내 컴퓨터, VPS, Render 어디서든 똑같이 돌아갑니다.
+# This file is "the recipe for building a box (image) that holds our app".
+# An image built from this one recipe runs the same everywhere: your computer, the VPS, or Render.
 
-# 1) 바탕: 파이썬 3.12가 깔린 작은 리눅스
+# 1) Base: a small Linux with Python 3.12 installed
 FROM python:3.12-slim
 
-# 파이썬 로그가 버퍼에 쌓이지 않고 바로 찍히게
+# Print Python logs right away instead of buffering them
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 WORKDIR /srv
 
-# 2) 라이브러리 먼저 설치. 코드보다 덜 자주 바뀌므로, 코드만 고쳤을 땐 이 단계를 캐시에서 재사용합니다.
+# 2) Install libraries first. They change less often than the code, so when only the code changes, this step is reused from cache.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 3) 우리 코드 복사
+# 3) Copy our code
 COPY app ./app
 
-# 4) 빌드할 때 버전(git 커밋 번호)을 이미지 안에 새겨 넣습니다.
+# 4) Stamp the version (git commit) into the image at build time.
 #    docker build --build-arg APP_VERSION=3f2a9c1 .
 ARG APP_VERSION=
 ENV APP_VERSION=$APP_VERSION
 
-# 5) 보안: 관리자(root)가 아닌 일반 사용자로 실행
+# 5) Security: run as a regular user, not the administrator (root)
 RUN useradd --create-home appuser
 USER appuser
 
 EXPOSE 8000
 
-# 6) 상자를 열면(컨테이너 시작) 실행할 명령.
-#    Render는 PORT 환경변수로 포트를 정해 주고, 없으면 8000을 씁니다.
+# 6) The command to run when the box is opened (the container starts).
+#    Render sets the port through the PORT environment variable; without it, 8000 is used.
 CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
