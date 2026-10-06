@@ -47,5 +47,5 @@ cat <<EOF
 다음 단계:
   1. DuckDNS(https://www.duckdns.org)에서 도메인을 만들고 IP 칸에 $IP 를 넣으세요.
   2. 서버에 접속:  gcloud compute ssh $NAME --project $PROJECT --zone $ZONE
-  3. docs/03-서버.md 의 setup.sh 단계를 따라가세요.
+  3. docs/03-server.md 의 setup.sh 단계를 따라가세요.
 EOF

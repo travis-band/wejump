@@ -20,7 +20,7 @@ set -euo pipefail
 
 [ "$(id -u)" -eq 0 ] || { echo "✗ sudo로 실행하세요."; exit 1; }
 DOMAIN="${DOMAIN:?DOMAIN=<도메인> 을 지정하세요 (예: wejump.duckdns.org)}"
-DEPLOY_PUBKEY="${DEPLOY_PUBKEY:?DEPLOY_PUBKEY=\"ssh-ed25519 ...\" 를 지정하세요 (docs/04 참고)}"
+DEPLOY_PUBKEY="${DEPLOY_PUBKEY:?DEPLOY_PUBKEY=\"ssh-ed25519 ...\" 를 지정하세요 (docs/03-server.md 3단계 참고)}"
 
 SRC="$(cd "$(dirname "$0")/../.." && pwd)"
 REPO_URL="$(git -C "$SRC" remote get-url origin)"
@@ -88,7 +88,7 @@ cat <<EOF
   - 배포 사용자: deploy
   - 이미지:      ghcr.io/$OWNER/wejump
 
-다음 단계 (docs/04-자동화.md):
+다음 단계 (docs/04-automation.md):
   GitHub 레포 → Settings → Secrets and variables → Actions 에서
     Variables: VPS_HOST = 서버 IP 또는 $DOMAIN
     Secrets:   VPS_SSH_KEY = (DEPLOY_PUBKEY 짝이 되는 개인키)

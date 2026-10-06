@@ -21,15 +21,15 @@ docker compose up --build
 
 | | 문서 | 내용 |
 |---|---|---|
-| 0 | [배포란 무엇인가](docs/00-배포란.md) | 큰 그림, 용어 |
-| 1 | [내 컴퓨터에서](docs/01-로컬.md) | 로컬 실행, localhost의 한계 |
-| 2 | [도커](docs/02-도커.md) | 이미지, 컨테이너, 볼륨 |
-| 2-1 | [로컬 DB 접속](docs/02-1-로컬DB.md) | localhost로 DB 접속, DB 파일이 저장되는 곳 |
-| 3 | [진짜 서버](docs/03-서버.md) | VPS, SSH, 도메인, HTTPS |
-| 4 | [자동 배포](docs/04-자동화.md) | GitHub Actions, 시크릿 |
+| 0 | [배포란 무엇인가](docs/00-what-is-deployment.md) | 큰 그림, 용어 |
+| 1 | [내 컴퓨터에서](docs/01-local.md) | 로컬 실행, localhost의 한계 |
+| 2 | [도커](docs/02-docker.md) | 이미지, 컨테이너, 볼륨 |
+| 2-1 | [로컬 DB 접속](docs/02-1-local-db.md) | localhost로 DB 접속, DB 파일이 저장되는 곳 |
+| 3 | [진짜 서버](docs/03-server.md) | VPS, SSH, 도메인, HTTPS |
+| 4 | [자동 배포](docs/04-automation.md) | GitHub Actions, 시크릿 |
 | 5 | [무중단 배포](docs/05-blue-green.md) | blue/green, 롤백, 로드밸런서 |
 | 6 | [PaaS](docs/06-render.md) | Render + Neon |
-| 참고 | [옵션 비교](docs/07-옵션비교.md) | 다른 방법들의 비용과 트레이드오프 |
+| 참고 | [옵션 비교](docs/07-options.md) | 다른 방법들의 비용과 트레이드오프 |
 
 ## 레포 구조
 
