@@ -74,7 +74,7 @@ ssh -i ~/.ssh/wejump_deploy deploy@wejump.duckdns.org "cat /opt/wejump/deploy/vp
 | The deploy step is gray (skipped) | There is no `VPS_HOST` variable | Add it under Variables |
 | `Permission denied (publickey)` | The private key was pasted incorrectly, or the public key isn't on the server | Start with the Mac ssh test above |
 | `denied` / `manifest unknown` (during deploy.sh) | The ghcr package is private | The Public setting in step 0 of [03](03-server.md) |
-| `✗ blue 가 건강하지 않습니다` ("blue is not healthy") | The new version can't return 200 from `/healthz` | The log is printed with it. The old version is still serving, so stay calm |
+| `✗ blue is not healthy` | The new version can't return 200 from `/healthz` | The log is printed with it. The old version is still serving, so stay calm |
 | On a Mac, `docker pull ghcr.io/...` fails with `no matching manifest for linux/arm64` | The image is built only for the server's CPU (amd64, the Intel/AMD family). M1 to M4 Macs are arm64 | `docker pull --platform linux/amd64 ...` (it runs under slow emulation). A good example of why each CPU type needs its own image |
 
 ## Think about it

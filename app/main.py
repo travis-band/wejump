@@ -28,7 +28,7 @@ async def lifespan(app):
     yield
 
 
-app = FastAPI(title="wejump 방명록", lifespan=lifespan)
+app = FastAPI(title="wejump guestbook", lifespan=lifespan)
 
 
 class NewMessage(BaseModel):

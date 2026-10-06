@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS messages (
 def connect():
     url = os.environ.get("DATABASE_URL")
     if not url:
-        raise RuntimeError("DATABASE_URL 환경변수가 없습니다. .env.example 을 참고하세요.")
+        raise RuntimeError("The DATABASE_URL environment variable is not set. See .env.example.")
     return psycopg.connect(url, row_factory=dict_row, connect_timeout=5)
 
 

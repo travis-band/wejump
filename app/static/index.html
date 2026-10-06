@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>wejump 방명록</title>
+  <title>wejump guestbook</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <div class="deploy-bar" aria-hidden="true"></div>
 
   <main>
-    <h1>wejump 방명록</h1>
-    <p class="lead">한마디 남겨 주세요. 서버를 껐다 켜도 글은 DB에 남아 있습니다.</p>
+    <h1>wejump guestbook</h1>
+    <p class="lead">Leave a message. It stays in the database even when the server restarts.</p>
 
     <form id="form">
-      <input id="name" name="name" placeholder="이름" maxlength="30" required autocomplete="off">
-      <textarea id="body" name="body" placeholder="한마디 (200자까지)" maxlength="200" rows="2" required></textarea>
-      <button type="submit">남기기</button>
+      <input id="name" name="name" placeholder="Name" maxlength="30" required autocomplete="off">
+      <textarea id="body" name="body" placeholder="Your message (up to 200 characters)" maxlength="200" rows="2" required></textarea>
+      <button type="submit">Post</button>
       <p id="error" class="error" role="alert"></p>
     </form>
 
@@ -24,8 +24,8 @@
   </main>
 
   <footer>
-    지금 응답한 서버: <span id="color-badge" class="badge">…</span>
-    버전 <code id="version">…</code>
+    Answered by: <span id="color-badge" class="badge">…</span>
+    version <code id="version">…</code>
   </footer>
 
   <script src="/app.js"></script>

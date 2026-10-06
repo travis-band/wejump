@@ -16,7 +16,7 @@ function renderMessage(m) {
 
   // Using textContent instead of innerHTML means that even if someone types <script>, it shows up as plain text (prevents XSS).
   who.textContent = m.name;
-  when.textContent = new Date(m.created_at).toLocaleString("ko-KR");
+  when.textContent = new Date(m.created_at).toLocaleString("en-US");
   text.textContent = m.body;
 
   meta.append(who, when);
@@ -31,7 +31,7 @@ async function loadMessages() {
   if (messages.length === 0) {
     const li = document.createElement("li");
     li.className = "empty";
-    li.textContent = "아직 글이 없어요. 첫 글을 남겨 보세요!";
+    li.textContent = "No messages yet. Be the first to leave one!";
     list.replaceChildren(li);
   } else {
     list.replaceChildren(...messages.map(renderMessage));
@@ -48,7 +48,7 @@ async function loadVersion() {
     document.querySelector("#color-badge").textContent = color;
     document.querySelector("#version").textContent = version;
   } catch {
-    document.querySelector("#color-badge").textContent = "연결 끊김";
+    document.querySelector("#color-badge").textContent = "disconnected";
   }
 }
 
@@ -64,13 +64,13 @@ form.addEventListener("submit", async (event) => {
       body: JSON.stringify({ name: nameInput.value, body: bodyInput.value }),
     });
     if (!res.ok) {
-      errorBox.textContent = res.status === 422 ? "이름과 한마디를 모두 적어 주세요." : `서버 오류 (${res.status})`;
+      errorBox.textContent = res.status === 422 ? "Please fill in both your name and a message." : `Server error (${res.status})`;
       return;
     }
     bodyInput.value = "";
     await loadMessages();
   } catch {
-    errorBox.textContent = "서버에 연결할 수 없어요.";
+    errorBox.textContent = "Can't reach the server.";
   } finally {
     button.disabled = false;
   }

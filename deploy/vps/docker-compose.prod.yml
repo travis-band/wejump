@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: wejump
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env에 POSTGRES_PASSWORD를 적어 주세요}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: wejump
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -35,7 +35,7 @@ services:
 
   app-blue:
     <<: *app
-    image: ${IMAGE:?.env에 IMAGE를 적어 주세요}:${BLUE_TAG:-latest}
+    image: ${IMAGE:?set IMAGE in .env}:${BLUE_TAG:-latest}
     environment:
       <<: *app-env
       APP_COLOR: blue

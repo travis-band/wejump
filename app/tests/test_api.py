@@ -24,7 +24,7 @@ def test_healthz():
 
 def test_write_then_read():
     with TestClient(app) as client:
-        r = client.post("/api/messages", json={"name": "테스트봇", "body": "안녕하세요"})
+        r = client.post("/api/messages", json={"name": "test-bot", "body": "hello"})
         assert r.status_code == 201
         new_id = r.json()["id"]
         try:
@@ -36,5 +36,5 @@ def test_write_then_read():
 
 def test_rejects_blank_message():
     with TestClient(app) as client:
-        r = client.post("/api/messages", json={"name": "   ", "body": "이름이 공백"})
+        r = client.post("/api/messages", json={"name": "   ", "body": "blank name"})
         assert r.status_code == 422

@@ -13,12 +13,12 @@
 set -euo pipefail
 cd "$(dirname "$0")" # Run from the folder this script is in (deploy/vps)
 
-TAG="${1:?사용법: ./deploy.sh <이미지 태그>}"
+TAG="${1:?usage: ./deploy.sh <image tag>}"
 COMPOSE="docker compose -f docker-compose.prod.yml"
 
-[ -f .env ] || { echo "✗ .env 파일이 없습니다. setup.sh를 먼저 실행하거나 .env.example을 복사하세요."; exit 1; }
+[ -f .env ] || { echo "✗ No .env file. Run setup.sh first, or copy .env.example."; exit 1; }
 DOMAIN=$(grep '^DOMAIN=' .env | cut -d= -f2-)
-[ -n "$DOMAIN" ] || { echo "✗ .env에 DOMAIN이 비어 있습니다."; exit 1; }
+[ -n "$DOMAIN" ] || { echo "✗ DOMAIN is empty in .env."; exit 1; }
 
 # Change one KEY=value line in .env (add it if missing). Doing it this way instead of sed -i works on both Mac and Linux.
 set_env() {
@@ -44,8 +44,8 @@ ACTIVE=$(cat .active 2>/dev/null || echo none)
 if [ "$ACTIVE" = blue ]; then NEXT=green; else NEXT=blue; fi
 NEXT_TAG_KEY="$(echo "$NEXT" | tr '[:lower:]' '[:upper:]')_TAG"
 
-echo "▶ 현재 손님을 받는 쪽: $ACTIVE"
-echo "▶ 새 버전 $TAG 을(를) $NEXT 에 올립니다"
+echo "▶ Currently serving visitors: $ACTIVE"
+echo "▶ Deploying new version $TAG to $NEXT"
 
 # ── 1. Start the new version in the NEXT slot ──────────────────────────────
 OLD_NEXT_TAG=$(grep "^$NEXT_TAG_KEY=" .env | cut -d= -f2- || true) # The value to restore if this fails
@@ -53,7 +53,7 @@ set_env "$NEXT_TAG_KEY" "$TAG"
 $COMPOSE up -d db "app-$NEXT" # Pulls the image from the registry (GHCR) if it isn't on the server
 
 # ── 2. Health check: knock on /healthz up to 30 times (about 30 seconds) until it returns 200 ──
-echo "▶ $NEXT 건강검진 중 (/healthz)..."
+echo "▶ Health-checking $NEXT (/healthz)..."
 healthy=no
 for _ in $(seq 1 30); do
   if $COMPOSE exec -T "app-$NEXT" python -c \
@@ -66,13 +66,13 @@ for _ in $(seq 1 30); do
 done
 
 if [ "$healthy" != yes ]; then
-  echo "✗ $NEXT 가 건강하지 않습니다. 손님은 그대로 $ACTIVE 에 남아 있습니다. 최근 로그:"
+  echo "✗ $NEXT is not healthy. Visitors stay on $ACTIVE. Recent logs:"
   $COMPOSE logs --tail 30 "app-$NEXT" || true
   $COMPOSE stop "app-$NEXT"
   set_env "$NEXT_TAG_KEY" "$OLD_NEXT_TAG" # Remove the broken tag from the record so rollback.sh doesn't get confused
   exit 1
 fi
-echo "✓ $NEXT 건강함"
+echo "✓ $NEXT is healthy"
 
 # ── 3. The switch: point Caddy at NEXT ──────────────────────────────────────
 write_caddyfile "$NEXT"
@@ -83,13 +83,13 @@ else
   sleep 2              # Caddy needs a little over a second to get ready the first time
 fi
 echo "$NEXT" > .active
-echo "✓ 이제 손님은 $NEXT($TAG) 로 갑니다"
+echo "✓ Visitors now go to $NEXT ($TAG)"
 
 # ── 4. Stop the old version (not deleted → rollback is possible) ────────────
 if [ "$ACTIVE" != none ]; then
   sleep 2 # Time for the old server to finish requests it was handling
   $COMPOSE stop "app-$ACTIVE"
-  echo "✓ $ACTIVE 는 꺼 두었습니다. 되돌리려면: ./rollback.sh"
+  echo "✓ $ACTIVE is stopped (not deleted). To go back: ./rollback.sh"
 fi
 
-echo "🎉 배포 완료: https://$DOMAIN"
+echo "🎉 Deploy complete: https://$DOMAIN"
