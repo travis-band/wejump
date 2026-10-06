@@ -7,7 +7,7 @@ The app is simple on purpose (a guestbook where you leave your name and a short 
 - **Track 1**: a free GCP server + Docker + Caddy + GitHub Actions. Push, and it does a zero-downtime blue/green deploy ($0)
 - **Track 2**: the same Dockerfile on Render + Neon ($0)
 
-The badge at the bottom of the page shows whether the server that just answered is `blue` or `green`. Watching that color change during a deploy, without refreshing, is the highlight of the lesson.
+The badge at the bottom of the page shows whether the server that just answered is `blue` or `green`. Watching that color change during a deploy, without reloading the page, is the highlight of the lesson. Turn on **Auto-refresh** at the top right of the page to see it.
 
 ## Run it in 30 seconds
 

@@ -42,18 +42,22 @@ While the Render app is awake, Render checks its health every few seconds by cal
 
 So Neon's awake time is roughly Render's awake time plus 5 minutes.
 
-One more thing keeps both awake: **an open browser tab**. The page asks the server for new messages every 3 seconds. Browsers slow down timers in background tabs, but still run them about once a minute, which is far more often than the 15 minutes Render needs to fall asleep.
+Requests from an open browser tab keep both awake too. That's why the page's **Auto-refresh** toggle (top right) is off by default:
+
+- **Off (the default)**: the page loads messages once when it opens, and again after you post. After that, an open tab sends nothing.
+- **On**: it refreshes every 10 seconds and shows "Last updated" in your browser's local time. It pauses while the tab is hidden, and after 10 minutes with no clicks, taps, typing, scrolling, or mouse movement. Coming back to the tab, or tapping, resumes it.
 
 ## How much will we use?
 
 | Usage | Render (of 750) | Neon (of 100) |
 |---|---|---|
 | Class 3 times a week, 1 hour each | About 16 hours | About 4 CU-hours |
-| Someone keeps the site open all day, every day | About 744 hours, fits | Runs out around day 17 |
+| A tab left open, with Auto-refresh off, or on but untouched | Nothing extra: the tab stops sending requests | Nothing extra |
+| Something outside the page requests the site all day, every day (an uptime monitor, for example) | About 744 hours, fits | Runs out around day 17 |
 
 The class numbers: each session keeps Render awake about 1 hour 15 minutes and Neon about 1 hour 20 minutes, about 13 sessions a month.
 
-**Used only during class, both are very generous.** The one risky case is leaving the site open on a classroom screen or in a student's browser for days. Neon runs out first.
+**Used only during class, both are very generous.** A forgotten open tab no longer uses anything, thanks to Auto-refresh being off by default and pausing on its own. The remaining risk is something outside the page requesting the site around the clock. Neon would run out first.
 
 ## What happens if Neon runs out
 
@@ -63,7 +67,8 @@ The class numbers: each session keeps Render awake about 1 hour 15 minutes and N
 
 ## How to avoid it
 
-- Close the site's tab after class. Don't leave it on a classroom screen for days.
+- Leave Auto-refresh off unless you need it, for example for the blue/green demo.
+- Don't point an uptime monitor or "keep-alive" pinger at the site. It stops both services from ever sleeping.
 - Check usage now and then: the usage page in the Neon console shows compute hours used this month, and Render's billing page shows free instance hours.
 
 ## Sources

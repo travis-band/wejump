@@ -58,7 +58,7 @@ ssh -i ~/.ssh/wejump_deploy deploy@wejump.duckdns.org "cat /opt/wejump/deploy/vp
    git push
    ```
 3. In GitHub → **Actions**, watch the three steps turn green one by one (2 to 3 minutes).
-4. Keep the site open. Without refreshing, the badge color and version number at the bottom of the page change.
+4. Turn on **Auto-refresh** at the top right of the site and keep it open. Within about 10 seconds of the deploy finishing, the badge color and version number at the bottom of the page change, without reloading the page.
 
 ## Experiment: tests block the deploy
 

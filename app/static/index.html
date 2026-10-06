@@ -10,7 +10,16 @@
   <div class="deploy-bar" aria-hidden="true"></div>
 
   <main>
-    <h1>wejump guestbook</h1>
+    <header class="top">
+      <h1>wejump guestbook</h1>
+      <div class="refresh">
+        <label class="switch">
+          <input type="checkbox" id="auto-refresh" role="switch">
+          Auto-refresh every 10 s
+        </label>
+        <span id="refresh-status">Last updated …</span>
+      </div>
+    </header>
     <p class="lead">Welcome! Leave a message.</p>
 
     <form id="form">

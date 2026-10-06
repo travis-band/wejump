@@ -47,9 +47,9 @@ visitors ──▶ Caddy (switch) ┤
 
 ## Classroom demo
 
-1. Students open the site on their phones. The badge at the bottom is blue: `blue`.
+1. Students open the site on their phones and turn on **Auto-refresh** at the top right. The badge at the bottom is blue: `blue`.
 2. The teacher changes the code and pushes.
-3. 2 to 3 minutes later, the badge on every student's phone changes to green `green` with a new version number, **without refreshing**.
+3. 2 to 3 minutes later, the badge on every student's phone changes to green `green` with a new version number, **without reloading the page**. Auto-refresh checks every 10 seconds, so it shows up within 10 seconds of the switch.
 4. Posting messages never fails the whole time.
 
 ## Measure it: did it really never go down?
@@ -184,7 +184,7 @@ visitors ──▶ Caddy (switch) ┤
                             └ ─ app-green  (empty)
 ```
 
-Now keep the site open and the badge switches blue, green, blue, green… every 2 seconds. You can see each request being shared between two servers.
+Now turn on Auto-refresh and keep the site open. The badge switches blue, green, blue, green… every 10 seconds. You can see each request being shared between two servers.
 
 - `lb_policy round_robin`: take turns in order. Without it, you get Caddy's default, **random** (blue may come up several times in a row).
 - A real service's load balancer spreads requests across several **servers** and automatically drops servers that fail their health check. Here it's two containers inside one server, so if the server dies, both die.
