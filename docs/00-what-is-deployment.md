@@ -59,6 +59,7 @@ We deploy the same app, with the same single `Dockerfile`, in two different ways
 | 5 | [05-blue-green](05-blue-green.md) | Zero-downtime deploys, rollback, load balancer |
 | 6 | [06-render](06-render.md) | The same thing on a PaaS in 15 minutes. Who does what for you |
 | Reference | [07-options](07-options.md) | Other options and their costs, and why we chose this setup |
+| Appendix | [Free-tier limits](appendix-free-tier-limits.md) | Monthly usage allowances on Render and Neon |
 
 **Track 1 (steps 1 to 5)**: you manage one server yourself. Every part is visible as a file. Cost: $0.
 **Track 2 (step 6)**: Render handles the server, HTTPS, and zero-downtime deploys for you. Easy, but you can't see inside. Cost: $0.

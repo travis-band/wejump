@@ -33,7 +33,7 @@ The further down you go, the less you do yourself, and the less you can see insi
 | Option | Monthly cost | Conditions |
 |---|---|---|
 | **Postgres container on the server** ✅ Track 1 | $0 | Uses the server's disk. You do your own backups |
-| **Neon free** ✅ Track 2 | $0 | 0.5GB, 100 compute hours, sleeps when unused |
+| **Neon free** ✅ Track 2 | $0 | 1 GB, 100 CU-hours of compute a month, sleeps when unused. See [the free-tier limits appendix](appendix-free-tier-limits.md) |
 | Supabase free | $0 | 0.5GB, the project pauses after 7 days with no database activity |
 | Render Postgres free | $0 | 1GB, **deleted after 30 days** |
 | GCP Cloud SQL | About $8 to $10 | Smallest shared-core instance. Never turns off |

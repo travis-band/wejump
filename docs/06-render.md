@@ -31,7 +31,7 @@ Render has free Postgres too, but:
 - It **expires 30 days after it's created**. 14 days after that, Render deletes it along with all its data.
 - Each workspace can have only one free database, and free databases have no backups.
 
-Neon's free plan has no time limit (0.5GB of storage; it sleeps when unused and wakes up when a request comes in). For a course that runs a whole term, that matters.
+Neon's free plan has no time limit (1 GB of storage; it sleeps when unused and wakes up when a request comes in). For a course that runs a whole term, that matters.
 
 Render Postgres does have one advantage. If you declare the database in `render.yaml`, Render puts the connection string into the app automatically (`fromDatabase`), so nobody has to copy a password. If your course ends within 30 days, or paying about $6 a month for Render's smallest paid database is fine, that setup is simpler.
 
@@ -69,6 +69,7 @@ Thanks to `autoDeployTrigger: checksPass` in `render.yaml`, when you push, Rende
 
 - **It goes to sleep after 15 minutes with no visitors.** The next visitor waits about a minute while it wakes up. Open it once 5 minutes before class starts.
 - Zero-downtime deploys, HTTPS, and the log screen all work on the free plan.
+- Both Render and Neon give a monthly allowance of "time switched on". Used only during class, it's plenty. Leaving the site open for days can use up Neon's allowance. See [the free-tier limits appendix](appendix-free-tier-limits.md).
 
 ## Compare
 

@@ -30,6 +30,7 @@ docker compose up --build
 | 5 | [Zero-downtime deploys](docs/05-blue-green.md) | Blue/green, rollback, load balancer |
 | 6 | [PaaS](docs/06-render.md) | Render + Neon |
 | Reference | [Comparing options](docs/07-options.md) | Costs and trade-offs of other approaches |
+| Appendix | [Free-tier limits](docs/appendix-free-tier-limits.md) | Monthly usage allowances on Render and Neon, and how not to run out |
 
 ## Repo layout
 
