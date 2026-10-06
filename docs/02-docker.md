@@ -38,6 +38,34 @@ docker compose up --build
 
 Open <http://localhost:8000>. This time there is no Python virtual environment. The Python inside the container runs the app.
 
+## Editing code while it runs
+
+For development, [`docker-compose.yml`](../docker-compose.yml) connects your `app/` folder straight into the container. This is called a **bind mount**:
+
+```yaml
+volumes:
+  - ./app:/srv/app
+```
+
+It also starts uvicorn with `--reload`. Together, this means:
+
+| What you change | What you do |
+|---|---|
+| HTML, CSS, JS in `app/static/` | Just refresh the browser |
+| Python files in `app/` | Nothing. The server restarts itself within a second |
+| `requirements.txt` or `Dockerfile` | `docker compose up -d --build` |
+
+### Experiment: an image is a snapshot
+
+Without the bind mount, the container only sees the copy of your code that `COPY app ./app` put into the image **at build time**.
+
+1. Put a `#` in front of the `- ./app:/srv/app` line in `docker-compose.yml`, then run `docker compose up -d`.
+2. Change the `<h1>` text in `app/static/index.html` and refresh. Nothing changes.
+3. Run `docker compose up -d --build` and refresh. Now it changes.
+4. Remove the `#` again and run `docker compose up -d`.
+
+A real server works like step 2. It has no bind mount and runs only what's inside the image. That's why every deploy starts by building a new image.
+
 ## How containers find each other
 
 Look at the app's database address in [`docker-compose.yml`](../docker-compose.yml).

@@ -22,11 +22,19 @@ services:
 
   app:
     build: .
+    # For development only: --reload restarts the server when a Python file changes
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app
     environment:
       DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump # Containers find each other by service name (db)
       APP_COLOR: local
     ports:
       - "8000:8000"
+    volumes:
+      # For development only: connect your app/ folder into the container (a "bind mount").
+      # Edits show up right away: refresh the browser for HTML/CSS/JS; Python changes restart the server.
+      # Changes to requirements.txt or the Dockerfile still need: docker compose up --build
+      # A real server has no bind mount. It runs only the copy baked into the image, so it needs a new build.
+      - ./app:/srv/app
     depends_on:
       db:
         condition: service_healthy
