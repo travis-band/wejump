@@ -26,7 +26,14 @@ We use the same `Dockerfile` as is. The only thing that changes is **who manages
 
 ## Why Neon for the database?
 
-Render has free Postgres too, but it is **deleted 30 days after it's created**. Neon's free plan has no time limit (0.5GB of storage; it sleeps when unused and wakes up when a request comes in).
+Render has free Postgres too, but:
+
+- It **expires 30 days after it's created**. 14 days after that, Render deletes it along with all its data.
+- Each workspace can have only one free database, and free databases have no backups.
+
+Neon's free plan has no time limit (0.5GB of storage; it sleeps when unused and wakes up when a request comes in). For a course that runs a whole term, that matters.
+
+Render Postgres does have one advantage. If you declare the database in `render.yaml`, Render puts the connection string into the app automatically (`fromDatabase`), so nobody has to copy a password. If your course ends within 30 days, or paying about $6 a month for Render's smallest paid database is fine, that setup is simpler.
 
 ## 1. Create the database on Neon
 
@@ -42,10 +49,15 @@ Render has free Postgres too, but it is **deleted 30 days after it's created**. 
 
 1. Sign up at <https://render.com> with your GitHub account (no card needed for the free plan).
 2. **New** → **Blueprint** → choose the `wejump` repo.
-3. Render reads `render.yaml` and shows you what it will create. Paste the Neon connection string into the `DATABASE_URL` field and click **Deploy Blueprint**.
-4. A few minutes later you get an address like `https://wejump-xxxx.onrender.com`.
+3. Render reads `render.yaml` and shows you what it will create.
+4. On that same Render page there is an input field for `DATABASE_URL`. **Paste the Neon connection string into that field on the Render page.**
+   - Never write the connection string into `render.yaml` or anywhere else in the code. In `render.yaml`, `sync: false` means "the app needs this variable, but its value is entered in the Render dashboard, not stored in this file".
+5. Click **Deploy Blueprint**.
+6. A few minutes later you get an address like `https://wejump-xxxx.onrender.com`.
 
 The badge at the bottom of the page is purple `render`, and the version is the first 7 characters of the commit.
+
+To change the connection string later, go to your service in the Render dashboard → **Environment**. The value lives there, not in the repo.
 
 ## 3. Automatic deploys
 
