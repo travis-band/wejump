@@ -86,3 +86,38 @@ footer {
   background: var(--deploy); color: #fff; font-weight: 700; transition: background .4s;
 }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* ── Login ─────────────────────────────────────────────────────────────────── */
+a { color: var(--deploy); }
+[hidden] { display: none !important; }
+
+/* Account area at the top right: sign-in link, or avatar + @username + Logout */
+.account { display: flex; justify-content: flex-end; align-items: center; gap: 12px; min-height: 28px; font-size: .9rem; }
+.account .who { color: var(--text); text-decoration: none; font-weight: 600; }
+.signin {
+  padding: 4px 12px; border-radius: 999px; text-decoration: none; font-weight: 600;
+  background: var(--deploy); color: #fff; transition: background .4s;
+}
+.link-button { padding: 0; background: none; color: var(--muted); font-weight: 400; text-decoration: underline; }
+
+.who { display: inline-flex; align-items: center; gap: 6px; }
+.avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--border); }
+
+.signin-hint {
+  background: var(--card); border: 1px dashed var(--border); border-radius: 12px;
+  padding: 14px; margin: 0 0 20px; text-align: center; color: var(--muted);
+}
+
+/* User page */
+.profile {
+  display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 24px;
+}
+.profile-avatar { width: 88px; height: 88px; border-radius: 50%; background: var(--border); }
+.profile h2 { margin: 0; font-size: 1.3rem; }
+.profile p { margin: 0 0 8px; }
+.profile dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0 0 12px; font-size: .9rem; }
+.profile dt { color: var(--muted); }
+.profile dd { margin: 0; }
+.profile button { padding: 6px 16px; }
+h2#my-messages-title { font-size: 1.1rem; margin: 0 0 10px; }

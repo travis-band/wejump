@@ -1,27 +1,16 @@
 // This file runs in the browser. It sends requests to the server (backend) with fetch and draws the results on the page.
+// renderMessage, loadVersion, loadMe, and renderAccount come from common.js.
 
 const form = document.querySelector("#form");
-const nameInput = document.querySelector("#name");
 const bodyInput = document.querySelector("#body");
 const errorBox = document.querySelector("#error");
 const list = document.querySelector("#messages");
+const signInHint = document.querySelector("#signin-hint");
 
-function renderMessage(m) {
-  const li = document.createElement("li");
-  const meta = document.createElement("div");
-  meta.className = "meta";
-  const who = document.createElement("strong");
-  const when = document.createElement("span");
-  const text = document.createElement("p");
-
-  // Using textContent instead of innerHTML means that even if someone types <script>, it shows up as plain text (prevents XSS).
-  who.textContent = m.name;
-  when.textContent = new Date(m.created_at).toLocaleString("en-US");
-  text.textContent = m.body;
-
-  meta.append(who, when);
-  li.append(meta, text);
-  return li;
+// Anyone can read, but only signed-in users can post. Show the form or a sign-in hint to match.
+function showForm(user) {
+  form.hidden = !user;
+  signInHint.hidden = Boolean(user);
 }
 
 // Returns true if the list was loaded, false if the server answered with an error.
@@ -40,20 +29,6 @@ async function loadMessages() {
   return true;
 }
 
-// Show whether the server that answered my request is blue or green.
-// During a deploy, the moment this color changes is the moment traffic moved to the new version.
-async function loadVersion() {
-  try {
-    const res = await fetch("/api/version", { cache: "no-store" });
-    const { version, color } = await res.json();
-    document.documentElement.dataset.color = color;
-    document.querySelector("#color-badge").textContent = color;
-    document.querySelector("#version").textContent = version;
-  } catch {
-    document.querySelector("#color-badge").textContent = "disconnected";
-  }
-}
-
 form.addEventListener("submit", async (event) => {
   event.preventDefault(); // Stop the page from reloading
   errorBox.textContent = "";
@@ -63,10 +38,16 @@ form.addEventListener("submit", async (event) => {
     const res = await fetch("/api/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: nameInput.value, body: bodyInput.value }),
+      body: JSON.stringify({ body: bodyInput.value }),
     });
+    if (res.status === 401) {
+      // The login cookie expired, or SESSION_SECRET changed on the server. Show the sign-in hint again.
+      renderAccount(null);
+      showForm(null);
+      return;
+    }
     if (!res.ok) {
-      errorBox.textContent = res.status === 422 ? "Please fill in both your name and a message." : `Server error (${res.status})`;
+      errorBox.textContent = res.status === 422 ? "Please write a message." : `Server error (${res.status})`;
       return;
     }
     bodyInput.value = "";
@@ -159,4 +140,12 @@ for (const type of ["pointerdown", "pointermove", "keydown", "scroll", "touchsta
   );
 }
 
-refreshAll(); // load once when the page opens
+// Load once when the page opens
+loadMe().then((user) => {
+  renderAccount(user);
+  showForm(user);
+});
+if (new URLSearchParams(location.search).get("login") === "failed") {
+  signInHint.prepend("Sign-in was canceled or failed. ");
+}
+refreshAll();

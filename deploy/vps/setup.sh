@@ -62,6 +62,9 @@ if [ ! -f "$ENV_FILE" ]; then
 DOMAIN=$DOMAIN
 IMAGE=ghcr.io/$OWNER/wejump-deployment
 POSTGRES_PASSWORD=$(openssl rand -hex 16)
+SESSION_SECRET=$(openssl rand -hex 32)
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
 BLUE_TAG=
 GREEN_TAG=
 EOF

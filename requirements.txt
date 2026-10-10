@@ -3,3 +3,6 @@
 fastapi==0.141.1
 uvicorn==0.54.0
 psycopg[binary]==3.3.6
+authlib==1.8.0       # GitHub login (OAuth)
+httpx==0.28.1        # Used by authlib to talk to GitHub
+itsdangerous==2.2.0  # Signs the login cookie so the browser can't change it
