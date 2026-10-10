@@ -2,10 +2,10 @@
 # Gets a new server ready for deploys. Run it exactly once per server.  ※ Run inside the server
 #
 #   Usage (after you ssh into the server):
-#     git clone https://github.com/<github-id>/wejump.git /tmp/wejump
+#     git clone https://github.com/<github-id>/wejump-deployment.git /tmp/wejump-deployment
 #     sudo DOMAIN=wejump.duckdns.org \
 #          DEPLOY_PUBKEY="ssh-ed25519 AAAA... github-actions" \
-#          bash /tmp/wejump/deploy/vps/setup.sh
+#          bash /tmp/wejump-deployment/deploy/vps/setup.sh
 #
 #   (Optional) automatic DuckDNS IP updates: also pass DUCKDNS_TOKEN=<token>.
 #
@@ -25,7 +25,7 @@ DEPLOY_PUBKEY="${DEPLOY_PUBKEY:?set DEPLOY_PUBKEY=\"ssh-ed25519 ...\" (see step 
 SRC="$(cd "$(dirname "$0")/../.." && pwd)"
 REPO_URL="$(git -C "$SRC" remote get-url origin)"
 OWNER="$(echo "$REPO_URL" | sed -E 's#.*github\.com[:/]([^/]+)/.*#\1#' | tr '[:upper:]' '[:lower:]')"
-APP_DIR=/opt/wejump
+APP_DIR=/opt/wejump # Kept from before the repo was renamed, so existing servers keep working
 
 echo "━━ 1/5 Install Docker"
 if ! command -v docker >/dev/null; then
@@ -60,7 +60,7 @@ ENV_FILE="$APP_DIR/deploy/vps/.env"
 if [ ! -f "$ENV_FILE" ]; then
   cat > "$ENV_FILE" <<EOF
 DOMAIN=$DOMAIN
-IMAGE=ghcr.io/$OWNER/wejump
+IMAGE=ghcr.io/$OWNER/wejump-deployment
 POSTGRES_PASSWORD=$(openssl rand -hex 16)
 BLUE_TAG=
 GREEN_TAG=
@@ -86,7 +86,7 @@ cat <<EOF
 ✓ The server is ready.
   - App location: $APP_DIR
   - Deploy user:  deploy
-  - Image:        ghcr.io/$OWNER/wejump
+  - Image:        ghcr.io/$OWNER/wejump-deployment
 
 Next step (docs/04-automation.md):
   In the GitHub repo → Settings → Secrets and variables → Actions, add

@@ -16,7 +16,7 @@ git push (main)
 [test]    Start a database briefly and run pytest  ── stops here on failure. Broken code never reaches the server
    │
    ▼
-[build]   Build the image from the Dockerfile → push it as ghcr.io/<id>/wejump:<first 7 chars of the commit>
+[build]   Build the image from the Dockerfile → push it as ghcr.io/<id>/wejump-deployment:<first 7 chars of the commit>
    │
    ▼
 [deploy]  SSH into the server → git pull → ./deploy/vps/deploy.sh <first 7 chars of the commit>

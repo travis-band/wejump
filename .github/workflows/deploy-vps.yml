@@ -59,7 +59,7 @@ jobs:
       - name: Pick the image name and tag
         id: meta
         run: |
-          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/wejump" >> "$GITHUB_OUTPUT"  # ,, = lowercase
+          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/wejump-deployment" >> "$GITHUB_OUTPUT"  # ,, = lowercase
           echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"                               # first 7 characters of the commit
 
       - uses: docker/login-action@v3

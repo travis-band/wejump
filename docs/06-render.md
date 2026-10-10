@@ -48,7 +48,7 @@ Render Postgres does have one advantage. If you declare the database in `render.
 ## 2. Deploy on Render
 
 1. Sign up at <https://render.com> with your GitHub account (no card needed for the free plan).
-2. **New** → **Blueprint** → choose the `wejump` repo.
+2. **New** → **Blueprint** → choose the `wejump-deployment` repo.
 3. Render reads `render.yaml` and shows you what it will create.
 4. On that same Render page there is an input field for `DATABASE_URL`. **Paste the Neon connection string into that field on the Render page.**
    - Never write the connection string into `render.yaml` or anywhere else in the code. In `render.yaml`, `sync: false` means "the app needs this variable, but its value is entered in the Render dashboard, not stored in this file".

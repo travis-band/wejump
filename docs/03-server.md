@@ -22,7 +22,7 @@ DuckDNS:  wejump.duckdns.org  ──▶  server IP
 The server doesn't build the app itself. It downloads a finished image from GitHub's warehouse (ghcr.io).
 
 1. When you push the repo to GitHub, Actions builds the image automatically. In the Actions tab, check that `test` and `build` are green. (`deploy` is skipped because nothing is configured yet. That's normal.)
-2. Go to your GitHub profile → **Packages** → `wejump` and check that the image is **Public**.
+2. Go to your GitHub profile → **Packages** → `wejump-deployment` and check that the image is **Public**.
    The server can only download the image without logging in if it's public. Images pushed by Actions from a public repo usually become public automatically. If it says Private, go to **Package settings** → **Change visibility** at the bottom → **Public**.
    There are no secrets in the image, so making it public is safe (see `.dockerignore` in [02-docker](02-docker.md)).
 
@@ -79,11 +79,11 @@ curl ifconfig.me  # this server's public IP
 Then run the setup script once.
 
 ```bash
-git clone https://github.com/<github-id>/wejump.git /tmp/wejump
+git clone https://github.com/<github-id>/wejump-deployment.git /tmp/wejump-deployment
 sudo DOMAIN=wejump.duckdns.org \
      DEPLOY_PUBKEY="<the one-line public key you copied in step 3>" \
      DUCKDNS_TOKEN=<DuckDNS token> \
-     bash /tmp/wejump/deploy/vps/setup.sh
+     bash /tmp/wejump-deployment/deploy/vps/setup.sh
 ```
 
 What [`setup.sh`](../deploy/vps/setup.sh) does: installs Docker, adds 1GB of swap memory, creates the `deploy` user and registers the public key, downloads the code to `/opt/wejump`, and creates `.env` (the database password is generated randomly, so no person ever needs to see it).
