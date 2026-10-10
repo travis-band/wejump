@@ -38,6 +38,7 @@ jobs:
           --health-retries 15
     env:
       DATABASE_URL: postgresql://wejump:test@localhost:5432/wejump
+      SESSION_SECRET: test-only-secret # The tests never talk to GitHub, so no OAuth App is needed
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
