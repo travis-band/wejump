@@ -29,6 +29,7 @@ docker compose up --build
 | 4 | [Automatic deploys](docs/04-automation.md) | GitHub Actions, secrets |
 | 5 | [Zero-downtime deploys](docs/05-blue-green.md) | Blue/green, rollback, load balancer |
 | 6 | [PaaS](docs/06-render.md) | Render + Neon |
+| 8 | [Signing in with GitHub](docs/08-login.md) | OAuth, signed cookies, login that survives blue/green |
 | Reference | [Comparing options](docs/07-options.md) | Costs and trade-offs of other approaches |
 | Appendix | [Free-tier limits](docs/appendix-free-tier-limits.md) | Monthly usage allowances on Render and Neon, and how not to run out |
 
@@ -40,7 +41,7 @@ A few names are kept as `wejump` on purpose, because changing them would cut off
 ## Repo layout
 
 ```
-app/                  The app (main.py backend, db.py SQL, static/ frontend, tests/)
+app/                  The app (main.py backend + login, db.py SQL, static/ frontend, tests/)
 Dockerfile            Recipe that turns the app into an image (shared by both tracks)
 docker-compose.yml    For your computer: app + database
 deploy/vps/           Track 1: scripts to create, prepare, deploy to, and roll back the server
@@ -57,3 +58,5 @@ docs/                 Lesson docs
 | Server database password | `deploy/vps/.env` on the server | No |
 | Server login key | GitHub Secrets `VPS_SSH_KEY` | No |
 | Neon database address | Render dashboard | No |
+| Login cookie key `SESSION_SECRET` | `.env` (local) / `deploy/vps/.env` on the server / Render dashboard | No (only a local-only value in `docker-compose.yml`) |
+| GitHub OAuth `GITHUB_CLIENT_SECRET` | `.env` (local) / `deploy/vps/.env` on the server / Render dashboard | No |

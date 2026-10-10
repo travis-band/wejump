@@ -193,5 +193,6 @@ Now turn on Auto-refresh and keep the site open. The badge switches blue, green,
 ## Limits and things to think about
 
 - **The database is shared.** Blue and green look at the same database, so if the new version changes a table's structure, the old version can break. Real services change things "a little at a time, in a way the old version still understands".
+- **Don't keep anything in one server's memory.** Blue and green don't share memory, so anything kept there (like who is signed in) vanishes on every switch. The login in [08](08-login.md) keeps it in a signed cookie instead, so it survives deploys and rollbacks.
 - **There's only one server.** If the server goes down, the site goes down. Several servers plus a load balancer in front is the next step. GCP's managed load balancer costs about $18 a month, so this course doesn't use it.
 - What if someone did all of this for you? → [06-render](06-render.md)
