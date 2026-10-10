@@ -4,19 +4,23 @@
 #   docker compose down            → stop (messages are kept)
 #   docker compose down -v         → stop and also delete the database volume (all messages are gone)
 
+# Pin the project name. Without it, Docker uses the folder name, so cloning into a folder called
+# wejump-deployment (or renaming the folder) would start a new, empty database volume (wejump_pgdata).
+name: wejump
+
 services:
   db:
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: wejump
       POSTGRES_PASSWORD: localdev # For your computer only. Never write a password in a file like this on a real server.
-      POSTGRES_DB: wejump
+      POSTGRES_DB: wejump_deployment
     ports:
       - "5432:5432" # So uvicorn/pytest on your computer can connect
     volumes:
       - pgdata:/var/lib/postgresql/data # Database files are stored in a "volume" outside the container → they survive when the container is deleted
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U wejump"]
+      test: ["CMD-SHELL", "pg_isready -U wejump -d wejump_deployment"]
       interval: 2s
       retries: 15
 
@@ -25,7 +29,7 @@ services:
     # For development only: --reload restarts the server when a Python file changes
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app
     environment:
-      DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump # Containers find each other by service name (db)
+      DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump_deployment # Containers find each other by service name (db)
       APP_COLOR: local
     ports:
       - "8000:8000"

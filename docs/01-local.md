@@ -6,7 +6,7 @@
 
 - Python 3.12
 - Docker Desktop (for now it's just the switch that turns the database on; [02-docker](02-docker.md) explains how it works)
-- This repo: `git clone https://github.com/<github-id>/wejump.git && cd wejump`
+- This repo: `git clone https://github.com/<github-id>/wejump-deployment.git && cd wejump-deployment`
 
 ## Follow along
 
