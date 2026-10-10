@@ -24,7 +24,7 @@ COLOR = os.environ.get("APP_COLOR", "local")
 
 @asynccontextmanager
 async def lifespan(app):
-    db.init()  # Prepare the table when the server starts
+    db.init()  # Prepare the tables when the server starts
     yield
 
 
@@ -45,7 +45,8 @@ def list_messages():
 
 @app.post("/api/messages", status_code=201)
 def create_message(msg: NewMessage):
-    return db.add_message(msg.name, msg.body)
+    # Until sign-in exists, every new message belongs to the guest user
+    return db.add_message(msg.name, msg.body, db.GUEST_ID)
 
 
 @app.get("/api/version")

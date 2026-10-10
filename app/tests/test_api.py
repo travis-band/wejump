@@ -38,3 +38,16 @@ def test_rejects_blank_message():
     with TestClient(app) as client:
         r = client.post("/api/messages", json={"name": "   ", "body": "blank name"})
         assert r.status_code == 422
+
+
+def test_old_app_version_can_still_insert():
+    """Rollback safety: an older version of the app doesn't know about user_id and inserts without it.
+    That must still work (the message becomes a guest message) instead of failing."""
+    with db.connect() as conn:
+        row = conn.execute(
+            "INSERT INTO messages (name, body) VALUES ('old-app', 'from an old version') RETURNING id, user_id"
+        ).fetchone()
+    try:
+        assert row["user_id"] == db.GUEST_ID
+    finally:
+        db.delete_message(row["id"])
