@@ -86,6 +86,15 @@ def list_messages(limit=50):
         ).fetchall()
 
 
+def list_messages_by_user(user_id, limit=50):
+    with connect() as conn:
+        return conn.execute(
+            f"SELECT {MESSAGE_COLUMNS} FROM messages m JOIN users u ON u.github_id = m.user_id "
+            "WHERE m.user_id = %s ORDER BY m.id DESC LIMIT %s",
+            (user_id, limit),
+        ).fetchall()
+
+
 def add_message(name, body, user_id):
     # Passing values separately for each %s lets psycopg insert them safely (prevents SQL injection).
     # Never build SQL by gluing strings together yourself.
@@ -104,3 +113,40 @@ def delete_message(message_id):
     with connect() as conn:
         conn.execute("DELETE FROM messages WHERE id = %s", (message_id,))
 
+
+def upsert_user(github_id, login, name, avatar_url, html_url):
+    """Called on every login: add the user the first time, refresh their profile after that."""
+    with connect() as conn:
+        conn.execute(
+            """
+            INSERT INTO users (github_id, login, name, avatar_url, html_url, last_login_at)
+            VALUES (%s, %s, %s, %s, %s, now())
+            ON CONFLICT (github_id) DO UPDATE SET
+                login = EXCLUDED.login,
+                name = EXCLUDED.name,
+                avatar_url = EXCLUDED.avatar_url,
+                html_url = EXCLUDED.html_url,
+                last_login_at = now()
+            """,
+            (github_id, login, name, avatar_url, html_url),
+        )
+
+
+def get_user(github_id):
+    """One user's profile plus how many messages they wrote, or None if there is no such user."""
+    with connect() as conn:
+        return conn.execute(
+            """
+            SELECT u.github_id, u.login, u.name, u.avatar_url, u.html_url, u.created_at, u.last_login_at,
+                   (SELECT count(*) FROM messages m WHERE m.user_id = u.github_id) AS message_count
+            FROM users u WHERE u.github_id = %s
+            """,
+            (github_id,),
+        ).fetchone()
+
+
+def delete_user(github_id):
+    """Remove a user and their messages (used by the tests to clean up after themselves)."""
+    with connect() as conn:
+        conn.execute("DELETE FROM messages WHERE user_id = %s", (github_id,))
+        conn.execute("DELETE FROM users WHERE github_id = %s", (github_id,))

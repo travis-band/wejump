@@ -30,4 +30,8 @@ EXPOSE 8000
 
 # 6) The command to run when the box is opened (the container starts).
 #    Render sets the port through the PORT environment variable; without it, 8000 is used.
-CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+#    --forwarded-allow-ips="*": Caddy and Render handle HTTPS, then pass the request to us over plain http.
+#    They add an X-Forwarded-Proto: https header to say so, and this flag tells uvicorn to believe it.
+#    Without it, the login callback address would start with http:// and GitHub would reject it.
+#    It's safe here because the app's port is never open to the internet, only to the proxy in front of it.
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
