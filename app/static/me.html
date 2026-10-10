@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My page · wejump guestbook</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="deploy-bar" aria-hidden="true"></div>
+
+  <main>
+    <nav class="account" id="account"></nav>
+
+    <header class="top">
+      <h1>My page</h1>
+    </header>
+    <p class="lead"><a href="/">← Back to the guestbook</a></p>
+
+    <!-- Shown when nobody is signed in -->
+    <p id="signin-hint" class="signin-hint" hidden>
+      <a href="/auth/login">Sign in with GitHub</a> to see your page.
+    </p>
+
+    <!-- Shown when someone is signed in. me.js fills in the blanks. -->
+    <section id="profile" class="profile" hidden>
+      <img id="profile-avatar" class="profile-avatar" alt="">
+      <div>
+        <h2 id="profile-name"></h2>
+        <p><a id="profile-login" target="_blank" rel="noopener"></a></p>
+        <dl>
+          <dt>Joined</dt><dd id="profile-joined"></dd>
+          <dt>Last sign-in</dt><dd id="profile-last-login"></dd>
+          <dt>Messages</dt><dd id="profile-count"></dd>
+        </dl>
+        <button type="button" id="logout">Logout</button>
+      </div>
+    </section>
+
+    <h2 id="my-messages-title" hidden>My messages</h2>
+    <ul id="messages"></ul>
+  </main>
+
+  <footer>
+    Answered by: <span id="color-badge" class="badge">…</span>
+    version <code id="version">…</code>
+  </footer>
+
+  <script src="/common.js"></script>
+  <script src="/me.js"></script>
+</body>
+</html>

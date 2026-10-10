@@ -10,6 +10,8 @@
   <div class="deploy-bar" aria-hidden="true"></div>
 
   <main>
+    <nav class="account" id="account"></nav>
+
     <header class="top">
       <h1>wejump guestbook</h1>
       <div class="refresh">
@@ -22,8 +24,11 @@
     </header>
     <p class="lead">Welcome! Leave a message.</p>
 
-    <form id="form">
-      <input id="name" name="name" placeholder="Name" maxlength="30" required autocomplete="off">
+    <p id="signin-hint" class="signin-hint">
+      <a href="/auth/login">Sign in with GitHub</a> to leave a message. Anyone can read without signing in.
+    </p>
+
+    <form id="form" hidden>
       <textarea id="body" name="body" placeholder="Your message (up to 200 characters)" maxlength="200" rows="2" required></textarea>
       <button type="submit">Post</button>
       <p id="error" class="error" role="alert"></p>
@@ -37,6 +42,7 @@
     version <code id="version">…</code>
   </footer>
 
+  <script src="/common.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
