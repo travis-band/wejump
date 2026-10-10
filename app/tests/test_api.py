@@ -7,7 +7,7 @@ Run (start the database first with docker compose up -d db):
 import os
 
 # If DATABASE_URL isn't set, use the local database from docker-compose.yml
-os.environ.setdefault("DATABASE_URL", "postgresql://wejump:localdev@localhost:5432/wejump")
+os.environ.setdefault("DATABASE_URL", "postgresql://wejump:localdev@localhost:5432/wejump_deployment")
 
 from fastapi.testclient import TestClient  # noqa: E402
 

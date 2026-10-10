@@ -30,14 +30,14 @@ jobs:
         env:
           POSTGRES_USER: wejump
           POSTGRES_PASSWORD: test
-          POSTGRES_DB: wejump
+          POSTGRES_DB: wejump_deployment
         ports: ["5432:5432"]
         options: >-
-          --health-cmd "pg_isready -U wejump"
+          --health-cmd "pg_isready -U wejump -d wejump_deployment"
           --health-interval 2s
           --health-retries 15
     env:
-      DATABASE_URL: postgresql://wejump:test@localhost:5432/wejump
+      DATABASE_URL: postgresql://wejump:test@localhost:5432/wejump_deployment
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6

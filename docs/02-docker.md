@@ -71,7 +71,7 @@ A real server works like step 2. It has no bind mount and runs only what's insid
 Look at the app's database address in [`docker-compose.yml`](../docker-compose.yml).
 
 ```
-DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump
+DATABASE_URL: postgresql://wejump:localdev@db:5432/wejump_deployment
 ```
 
 The host is `db`, not `localhost`. Inside a container, `localhost` means "this container itself", and there is no database there. Containers in the same compose file find each other by **service name**.
@@ -92,7 +92,7 @@ Containers are disposable. You throw them away and make new ones any time. Data 
 
 ```bash
 docker compose up -d
-docker compose exec db psql -U wejump -c "SELECT * FROM messages;"
+docker compose exec db psql -U wejump -d wejump_deployment -c "SELECT * FROM messages;"
 ```
 
 The messages you saw on screen come out as a table. How to connect from your own computer over localhost, and where the volume is actually stored, are covered in [02-1-local-db](02-1-local-db.md).

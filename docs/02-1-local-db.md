@@ -23,27 +23,37 @@ These are the local-only values written in [`docker-compose.yml`](../docker-comp
 | Port | `5432` |
 | User | `wejump` |
 | Password | `localdev` |
-| Database name | `wejump` |
+| Database name | `wejump_deployment` |
 
 Written as one line, it looks like this. This format is called a **connection string**.
 
 ```
-postgresql://wejump:localdev@localhost:5432/wejump
+postgresql://wejump:localdev@localhost:5432/wejump_deployment
           user   password  host      port  database
 ```
+
+> **Set this up before the database was renamed?** Earlier versions called the database `wejump`. Postgres only reads `POSTGRES_DB` when the volume is first created, so an existing volume still has the old name and the app can't find `wejump_deployment`. Rename it once, keeping all your messages:
+>
+> ```bash
+> docker compose stop app        # nothing may be connected while renaming
+> docker compose exec db psql -U wejump -d postgres -c "ALTER DATABASE wejump RENAME TO wejump_deployment;"
+> docker compose start app
+> ```
+>
+> Also change the end of `DATABASE_URL` in your `.env` from `/wejump` to `/wejump_deployment`.
 
 ## 3. Three ways to connect
 
 **Option 1. psql inside the container** (nothing to install)
 
 ```bash
-docker compose exec db psql -U wejump
+docker compose exec db psql -U wejump -d wejump_deployment
 ```
 
 **Option 2. psql on your own computer** (check that it's installed with `which psql`)
 
 ```bash
-psql postgresql://wejump:localdev@localhost:5432/wejump
+psql postgresql://wejump:localdev@localhost:5432/wejump_deployment
 ```
 
 **Option 3. A GUI tool** (TablePlus, DBeaver, DataGrip, and so on)

@@ -108,7 +108,7 @@ cat Caddyfile            # where visitors are being sent right now
 cat .active              # blue
 dc logs caddy | grep -i certificate   # the certificate issuing log
 dc logs -f app-blue      # live access log. Open the site on your phone and it shows up here (Ctrl+C to stop)
-dc exec db psql -U wejump -c "SELECT count(*) FROM messages;"
+dc exec db psql -U wejump -d wejump_deployment -c "SELECT count(*) FROM messages;"
 ```
 
 ## 7. Security check

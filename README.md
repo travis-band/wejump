@@ -34,8 +34,8 @@ docker compose up --build
 
 ## About the names
 
-The repo is called `wejump-deployment`, and so is the image (`ghcr.io/<id>/wejump-deployment`). The app itself is still the "wejump guestbook".
-A few names are kept as `wejump` on purpose, because changing them would cut off data or servers that already exist: the database user and name, the server folder `/opt/wejump`, the Docker Compose project names (`wejump`, `wejump-prod`, which name the database volumes), and the GCP VM and firewall names.
+The repo is called `wejump-deployment`, and so is the image (`ghcr.io/<id>/wejump-deployment`). The database is `wejump_deployment` (an underscore, because Postgres needs quotes around names with a hyphen). The app itself is still the "wejump guestbook".
+A few names are kept as `wejump` on purpose, because changing them would cut off data or servers that already exist: the database user, the server folder `/opt/wejump`, the Docker Compose project names (`wejump`, `wejump-prod`, which name the database volumes), and the GCP VM and firewall names.
 
 ## Repo layout
 
